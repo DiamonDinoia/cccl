@@ -70,6 +70,17 @@ struct default_domain
   _CUDAX_API static constexpr auto __apply(_Tag) noexcept;
 };
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// stream evaluation function dispatched on algorithm tag
+#if defined(__CUDA_ARCH__) && _CCCL_OS(WINDOWS)
+// "A __device__ variable template cannot have a const qualified type on Windows"
+template <class _Tag>
+__device__ auto __stream_apply = default_domain::__apply(_Tag());
+#else
+template <class _Tag>
+_CCCL_GLOBAL_CONSTANT auto __stream_apply = default_domain::__apply(_Tag());
+#endif
+
 template <class... _Sigs>
 struct completion_signatures;
 
