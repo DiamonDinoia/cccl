@@ -403,7 +403,7 @@ struct ReduceByKeyOp
 //----------------------------------------------------------------------------------------------------------------------
 // Predefined operators
 
-namespace internal
+namespace detail
 {
 
 template <typename ReductionOp, typename T>
@@ -438,7 +438,7 @@ inline constexpr bool is_cuda_std_operator_v =
   is_cuda_std_plus_mul_v<ReductionOp, T> || //
   is_cuda_std_bitwise_v<ReductionOp, T>;
 
-} // namespace internal
+} // namespace detail
 
 #endif // !_CCCL_DOXYGEN_INVOKED
 
