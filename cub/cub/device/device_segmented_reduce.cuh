@@ -54,6 +54,7 @@
 
 #include <cuda/std/limits>
 #include <cuda/std/type_traits>
+#include <cuda/std/utility>
 
 #include <iterator>
 
