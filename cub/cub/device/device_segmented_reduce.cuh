@@ -520,8 +520,8 @@ public:
   //! .. literalinclude:: ../../../cub/test/catch2_test_device_segmented_reduce_api.cu
   //!     :language: c++
   //!     :dedent:
-  //!     :start-after: example-begin segmented-reduce-sum
-  //!     :end-before: example-end segmented-reduce-sum
+  //!     :start-after: example-begin fixed-size-segmented-reduce-sum
+  //!     :end-before: example-end fixed-size-segmented-reduce-sum
   //!
   //! @endrst
   //!
@@ -720,8 +720,8 @@ public:
   //! .. literalinclude:: ../../../cub/test/catch2_test_device_segmented_reduce_api.cu
   //!     :language: c++
   //!     :dedent:
-  //!     :start-after: example-begin segmented-reduce-min
-  //!     :end-before: example-end segmented-reduce-min
+  //!     :start-after: example-begin fixed-size-segmented-reduce-min
+  //!     :end-before: example-end fixed-size-segmented-reduce-min
   //!
   //! @endrst
   //!
@@ -954,8 +954,8 @@ public:
   //! .. literalinclude:: ../../../cub/test/catch2_test_device_segmented_reduce_api.cu
   //!     :language: c++
   //!     :dedent:
-  //!     :start-after: example-begin segmented-reduce-argmin
-  //!     :end-before: example-end segmented-reduce-argmin
+  //!     :start-after: example-begin fixed-size-segmented-reduce-argmin
+  //!     :end-before: example-end fixed-size-segmented-reduce-argmin
   //!
   //! @endrst
   //!
@@ -1170,8 +1170,8 @@ public:
   //! .. literalinclude:: ../../../cub/test/catch2_test_device_segmented_reduce_api.cu
   //!     :language: c++
   //!     :dedent:
-  //!     :start-after: example-begin segmented-reduce-max
-  //!     :end-before: example-end segmented-reduce-max
+  //!     :start-after: example-begin fixed-size-segmented-reduce-max
+  //!     :end-before: example-end fixed-size-segmented-reduce-max
   //!
   //! @endrst
   //!
@@ -1408,8 +1408,8 @@ public:
   //! .. literalinclude:: ../../../cub/test/catch2_test_device_segmented_reduce_api.cu
   //!     :language: c++
   //!     :dedent:
-  //!     :start-after: example-begin segmented-reduce-argmax
-  //!     :end-before: example-end segmented-reduce-argmax
+  //!     :start-after: example-begin fixed-size-segmented-reduce-argmax
+  //!     :end-before: example-end fixed-size-segmented-reduce-argmax
   //!
   //! @endrst
   //!
