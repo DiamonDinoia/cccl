@@ -13,7 +13,7 @@
 
 #include <cuda/std/__cccl/compiler.h>
 
-//! There is compiler bug that results in incorrect results for the below `__is_non_narrowing_convertible` check.
+//! There is compiler bug that results in incorrect results for the below `__cccl_is_non_narrowing_convertible` check.
 //! This breaks some common functionality, so this *must* be included outside of a system header. See nvbug4867473.
 #if defined(_CCCL_FORCE_SYSTEM_HEADER_GCC) || defined(_CCCL_FORCE_SYSTEM_HEADER_CLANG) \
   || defined(_CCCL_FORCE_SYSTEM_HEADER_MSVC)
@@ -51,22 +51,38 @@ void __cccl_accepts_implicit_conversion(_Tp) noexcept;
 template <class...>
 using __cccl_void_t = void;
 
+#if _CCCL_COMPILER(NVHPC)
+template <class...>
+inline constexpr bool __cccl_is_non_narrowing = false;
+
+template <class _Dest, class _Source>
+inline constexpr bool __cccl_is_non_narrowing<_Dest, _Source> = false;
+#else // ^^^ _CCCL_COMPILER(NVHPC) ^^^ / vvv !_CCCL_COMPILER(NVHPC) vvv
 template <class _Dest, class _Source, class = void>
-struct __is_non_narrowing_convertible
-{
-  static constexpr bool value = false;
-};
+inline constexpr bool __cccl_is_non_narrowing = false;
+#endif // !_CCCL_COMPILER(NVHPC)
 
 // This also prohibits narrowing conversion in case of arithmetic types
 template <class _Dest, class _Source>
-struct __is_non_narrowing_convertible<_Dest,
-                                      _Source,
-                                      __cccl_void_t<decltype(__cccl_internal::__cccl_accepts_implicit_conversion<_Dest>(
-                                                      __cccl_internal::__cccl_declval<_Source>())),
-                                                    decltype(_Dest{__cccl_internal::__cccl_declval<_Source>()})>>
-{
-  static constexpr bool value = true;
-};
+inline constexpr bool
+  __cccl_is_non_narrowing<_Dest, _Source, __cccl_void_t<decltype(_Dest{__cccl_declval<_Source>()})>> = true;
+
+template <class _Dest, class _Source, class = void>
+inline constexpr bool __cccl_is_implicit_convertible = false;
+
+template <class _Dest, class _Source>
+inline constexpr bool __cccl_is_implicit_convertible<
+  _Dest,
+  _Source,
+  __cccl_void_t<decltype(__cccl_internal::__cccl_accepts_implicit_conversion<_Dest>(
+    __cccl_internal::__cccl_declval<_Source>()))>> = true;
+
+template <class _Dest, class _Source, bool = __cccl_is_implicit_convertible<_Dest, _Source>>
+inline constexpr bool __cccl_is_non_narrowing_convertible = false;
+
+template <class _Dest, class _Source>
+inline constexpr bool __cccl_is_non_narrowing_convertible<_Dest, _Source, true> =
+  __cccl_is_non_narrowing<_Dest, _Source>;
 
 } // namespace __cccl_internal
 

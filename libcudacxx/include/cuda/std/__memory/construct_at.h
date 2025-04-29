@@ -76,14 +76,23 @@ namespace __detail
 {
 // We cannot allow narrowing conversions between arithmetic types as the assignment will generate an error
 template <class _Tp, class... _Args>
-using __check_narrowing =
-  conditional_t<sizeof...(_Args) == 1, __cccl_internal::__is_non_narrowing_convertible<_Tp, _Args...>, true_type>;
+[[nodiscard]] _LIBCUDACXX_HIDE_FROM_ABI constexpr bool __is_non_narrowing()
+{
+  if constexpr (sizeof...(_Args) == 1)
+  {
+    return __cccl_internal::__cccl_is_non_narrowing<_Tp, _Args...>;
+  }
+  else
+  {
+    return true;
+  }
+}
 
 template <class _Tp, class... _Args>
 _CCCL_CONCEPT __can_optimize_construct_at = _CCCL_REQUIRES_EXPR((_Tp, variadic _Args))(
   requires(is_trivially_constructible_v<_Tp, _Args...>),
   requires(is_trivially_move_assignable_v<_Tp>),
-  requires(__check_narrowing<_Tp, _Args...>::value));
+  requires(__is_non_narrowing<_Tp, _Args...>()));
 } // namespace __detail
 
 // construct_at
