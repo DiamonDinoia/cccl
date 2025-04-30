@@ -62,23 +62,16 @@
 #  define _CCCL_NODEBUG_ALIAS
 #endif // !_CCCL_CUDA_COMPILER(CLANG)
 
-#if _CCCL_COMPILER(MSVC) || _CCCL_HAS_CPP_ATTRIBUTE(no_unique_address) < 201803L
-// MSVC implementation has lead to multiple issues with silent runtime corruption when passing data into kernels
-#  define _CCCL_HAS_ATTRIBUTE_NO_UNIQUE_ADDRESS() 0
-#  define _CCCL_NO_UNIQUE_ADDRESS
-#elif _CCCL_HAS_CPP_ATTRIBUTE(no_unique_address)
+#if _CCCL_HAS_CPP_ATTRIBUTE(msvc::no_unique_address)
+#  define _CCCL_HAS_ATTRIBUTE_NO_UNIQUE_ADDRESS() 1
+#  define _CCCL_NO_UNIQUE_ADDRESS                 [[msvc::no_unique_address]]
+#elif _CCCL_HAS_ATTRIBUTE(no_unique_address)
 #  define _CCCL_HAS_ATTRIBUTE_NO_UNIQUE_ADDRESS() 1
 #  define _CCCL_NO_UNIQUE_ADDRESS                 [[no_unique_address]]
-#else
+#else // ^^^ _CCCL_HAS_CPP_ATTRIBUTE(no_unique_address) ^^^ / vvv !_CCCL_HAS_CPP_ATTRIBUTE(no_unique_address) vvv
 #  define _CCCL_HAS_ATTRIBUTE_NO_UNIQUE_ADDRESS() 0
 #  define _CCCL_NO_UNIQUE_ADDRESS
-#endif
-
-// Passing objects with nested [[no_unique_address]] to kernels leads to data corruption
-#if _CCCL_HAS_ATTRIBUTE_NO_UNIQUE_ADDRESS() && _CCCL_COMPILER(CLANG)
-#  undef _CCCL_HAS_ATTRIBUTE_NO_UNIQUE_ADDRESS
-#  define _CCCL_HAS_ATTRIBUTE_NO_UNIQUE_ADDRESS() 0
-#endif // _CCCL_HAS_ATTRIBUTE_NO_UNIQUE_ADDRESS() && _CCCL_COMPILER(CLANG)
+#endif // !_CCCL_HAS_CPP_ATTRIBUTE(no_unique_address)
 
 // It always fails with clang
 #if _CCCL_COMPILER(CLANG)
