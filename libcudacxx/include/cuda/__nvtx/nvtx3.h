@@ -607,22 +607,6 @@
 #  define NVTX3_INLINE_IF_REQUESTED
 #endif
 
-/* Enables the use of constexpr when support for C++14 constexpr is present.
- *
- * Initialization of a class member that is a union to a specific union member
- * can only be done in the body of a constructor, not in a member initializer
- * list.  A constexpr constructor must have an empty body until C++14, so there
- * is no way to make an initializer of a member union constexpr in C++11.  This
- * macro allows making functions constexpr in C++14 or newer, but non-constexpr
- * in C++11 compilation.  It is used here on constructors that initialize their
- * member unions.
- */
-#if __cpp_constexpr >= 201304L
-#  define NVTX3_CONSTEXPR_IF_CPP14 constexpr
-#else
-#  define NVTX3_CONSTEXPR_IF_CPP14
-#endif
-
 // Macro wrappers for C++ attributes
 #if !defined(__has_cpp_attribute)
 #  define __has_cpp_attribute(x) 0
@@ -659,7 +643,7 @@
 #  include <type_traits>
 #  include <utility>
 
-#  include "nvToolsExt.h"
+#  include <nvtx3/nvToolsExt.h>
 
 namespace nvtx3
 {
@@ -1672,7 +1656,7 @@ NVTX3_INLINE_IF_REQUESTED namespace NVTX3_VERSION_NAMESPACE
      *
      * @param msg The contents of the message
      */
-    NVTX3_CONSTEXPR_IF_CPP14 message(char const* msg) noexcept
+    constexpr message(char const* msg) noexcept
         : type_{NVTX_MESSAGE_TYPE_ASCII}
     {
       value_.ascii = msg;
@@ -1702,7 +1686,7 @@ NVTX3_INLINE_IF_REQUESTED namespace NVTX3_VERSION_NAMESPACE
      *
      * @param msg The contents of the message
      */
-    NVTX3_CONSTEXPR_IF_CPP14 message(wchar_t const* msg) noexcept
+    constexpr message(wchar_t const* msg) noexcept
         : type_{NVTX_MESSAGE_TYPE_UNICODE}
     {
       value_.unicode = msg;
@@ -1736,7 +1720,7 @@ NVTX3_INLINE_IF_REQUESTED namespace NVTX3_VERSION_NAMESPACE
      * @param msg The message that has already been registered with NVTX.
      */
     template <typename D>
-    NVTX3_CONSTEXPR_IF_CPP14 message(registered_string_in<D> const& msg) noexcept
+    constexpr message(registered_string_in<D> const& msg) noexcept
         : type_{NVTX_MESSAGE_TYPE_REGISTERED}
     {
       value_.registered = msg.get_handle();
@@ -1758,7 +1742,7 @@ NVTX3_INLINE_IF_REQUESTED namespace NVTX3_VERSION_NAMESPACE
      *
      * @param handle nvtxStringHandle_t value of registered string handle
      */
-    NVTX3_CONSTEXPR_IF_CPP14 message(nvtxStringHandle_t handle) noexcept
+    constexpr message(nvtxStringHandle_t handle) noexcept
         : type_{NVTX_MESSAGE_TYPE_REGISTERED}
     {
       value_.registered = handle;
@@ -1813,7 +1797,7 @@ NVTX3_INLINE_IF_REQUESTED namespace NVTX3_VERSION_NAMESPACE
      *
      * @param value Value to use as contents of the payload
      */
-    NVTX3_CONSTEXPR_IF_CPP14 explicit payload(int64_t value) noexcept
+    constexpr explicit payload(int64_t value) noexcept
         : type_{NVTX_PAYLOAD_TYPE_INT64}
         , value_{}
     {
@@ -1825,7 +1809,7 @@ NVTX3_INLINE_IF_REQUESTED namespace NVTX3_VERSION_NAMESPACE
      *
      * @param value Value to use as contents of the payload
      */
-    NVTX3_CONSTEXPR_IF_CPP14 explicit payload(int32_t value) noexcept
+    constexpr explicit payload(int32_t value) noexcept
         : type_{NVTX_PAYLOAD_TYPE_INT32}
         , value_{}
     {
@@ -1837,7 +1821,7 @@ NVTX3_INLINE_IF_REQUESTED namespace NVTX3_VERSION_NAMESPACE
      *
      * @param value Value to use as contents of the payload
      */
-    NVTX3_CONSTEXPR_IF_CPP14 explicit payload(uint64_t value) noexcept
+    constexpr explicit payload(uint64_t value) noexcept
         : type_{NVTX_PAYLOAD_TYPE_UNSIGNED_INT64}
         , value_{}
     {
@@ -1849,7 +1833,7 @@ NVTX3_INLINE_IF_REQUESTED namespace NVTX3_VERSION_NAMESPACE
      *
      * @param value Value to use as contents of the payload
      */
-    NVTX3_CONSTEXPR_IF_CPP14 explicit payload(uint32_t value) noexcept
+    constexpr explicit payload(uint32_t value) noexcept
         : type_{NVTX_PAYLOAD_TYPE_UNSIGNED_INT32}
         , value_{}
     {
@@ -1862,7 +1846,7 @@ NVTX3_INLINE_IF_REQUESTED namespace NVTX3_VERSION_NAMESPACE
      *
      * @param value Value to use as contents of the payload
      */
-    NVTX3_CONSTEXPR_IF_CPP14 explicit payload(float value) noexcept
+    constexpr explicit payload(float value) noexcept
         : type_{NVTX_PAYLOAD_TYPE_FLOAT}
         , value_{}
     {
@@ -1875,7 +1859,7 @@ NVTX3_INLINE_IF_REQUESTED namespace NVTX3_VERSION_NAMESPACE
      *
      * @param value Value to use as contents of the payload
      */
-    NVTX3_CONSTEXPR_IF_CPP14 explicit payload(double value) noexcept
+    constexpr explicit payload(double value) noexcept
         : type_{NVTX_PAYLOAD_TYPE_DOUBLE}
         , value_{}
     {
@@ -2006,7 +1990,7 @@ NVTX3_INLINE_IF_REQUESTED namespace NVTX3_VERSION_NAMESPACE
      *
      */
     template <typename... Args>
-    NVTX3_CONSTEXPR_IF_CPP14 explicit event_attributes(category const& c, Args const&... args) noexcept
+    constexpr explicit event_attributes(category const& c, Args const&... args) noexcept
         : event_attributes(args...)
     {
       attributes_.category = c.get_id();
@@ -2020,7 +2004,7 @@ NVTX3_INLINE_IF_REQUESTED namespace NVTX3_VERSION_NAMESPACE
      *
      */
     template <typename... Args>
-    NVTX3_CONSTEXPR_IF_CPP14 explicit event_attributes(color const& c, Args const&... args) noexcept
+    constexpr explicit event_attributes(color const& c, Args const&... args) noexcept
         : event_attributes(args...)
     {
       attributes_.color     = c.get_value();
@@ -2035,7 +2019,7 @@ NVTX3_INLINE_IF_REQUESTED namespace NVTX3_VERSION_NAMESPACE
      *
      */
     template <typename... Args>
-    NVTX3_CONSTEXPR_IF_CPP14 explicit event_attributes(payload const& p, Args const&... args) noexcept
+    constexpr explicit event_attributes(payload const& p, Args const&... args) noexcept
         : event_attributes(args...)
     {
       attributes_.payload     = p.get_value();
@@ -2050,7 +2034,7 @@ NVTX3_INLINE_IF_REQUESTED namespace NVTX3_VERSION_NAMESPACE
      *
      */
     template <typename... Args>
-    NVTX3_CONSTEXPR_IF_CPP14 explicit event_attributes(message const& m, Args const&... args) noexcept
+    constexpr explicit event_attributes(message const& m, Args const&... args) noexcept
         : event_attributes(args...)
     {
       attributes_.message     = m.get_value();
@@ -2963,7 +2947,6 @@ NVTX3_INLINE_IF_REQUESTED namespace NVTX3_VERSION_NAMESPACE
 #undef NVTX3_NAMESPACE_FOR
 #undef NVTX3_VERSION_NAMESPACE
 #undef NVTX3_INLINE_IF_REQUESTED
-#undef NVTX3_CONSTEXPR_IF_CPP14
 #undef NVTX3_MAYBE_UNUSED
 #undef NVTX3_NO_DISCARD
 
